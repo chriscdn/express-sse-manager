@@ -43,6 +43,10 @@ module.exports = class Manager {
 		}
 	}
 
+	sendSnackBar(key, message) {
+		this.sendMessage(key, 'snackbar', { snackbar: message })
+	}
+
 	appendToMessageArchive(key, evt, json) {
 
 		if (!this.messageArchive.has(key)) {

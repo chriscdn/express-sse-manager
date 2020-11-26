@@ -42,11 +42,7 @@ module.exports = class Manager {
 			res.sse(evt, json, id)
 		}
 	}
-
-	sendSnackBar(key, message) {
-		this.sendMessage(key, 'snackbar', { snackbar: message })
-	}
-
+	
 	appendToMessageArchive(key, evt, json) {
 
 		if (!this.messageArchive.has(key)) {

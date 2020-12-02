@@ -33,7 +33,7 @@ module.exports = class Manager {
 		this.removeConnection(key)
 	}
 
-	sendMessage(key, evt, json, id = null) { // , id = null) {
+	sendMessage(key, evt, json = {}, id = null) { // , id = null) {
 
 		const res = this.connections.get(key)
 		// const theID = isNaN(id) ? -1 : id
@@ -43,7 +43,7 @@ module.exports = class Manager {
 		}
 	}
 	
-	appendToMessageArchive(key, evt, json) {
+	appendToMessageArchive(key, evt, json={}) {
 
 		if (!this.messageArchive.has(key)) {
 			this.messageArchive.set(key, [])

@@ -1,3 +1,14 @@
+//
+//
+// Tricky thing is knowing key, which could be a session key of some sorts.
+//
+// perhaps separate middleware could be used to get the sse res for a given session
+// this would likely introduce a dependency on sessions
+// 
+// 
+// 
+// 
+
 module.exports = class Manager {
 
 	constructor() {

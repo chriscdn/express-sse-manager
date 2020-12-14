@@ -2,5 +2,11 @@
 	"name": "@chriscdn/express-sse-manager",
 	"version": "1.0.0",
 	"main": "index.js",
-	"license": "MIT"
+	"license": "MIT",
+	"peerDependencies": {
+		"express": "4.x"
+	},
+	"devDependencies": {
+		"express": "^4.17.1"
+	}
 }

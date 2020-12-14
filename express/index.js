@@ -1,8 +1,8 @@
-const middleware = require('./middleware')
-const Manager = require('./Manager')
+// const middleware = require('./middleware')
+const manager = require('./manager')
+const routes = require('./routes')
 
 module.exports = {
-	middleware,
-	Manager,
-	manager: new Manager()
+	manager,
+	routes
 }

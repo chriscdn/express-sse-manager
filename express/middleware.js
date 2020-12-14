@@ -1,6 +1,6 @@
 // based on https://www.npmjs.com/package/sse-express
 
-module.exports = function(req, res, next) {
+module.exports = (req, res, next) => {
 
 	res.writeHead(200, {
 		'Content-Type': 'text/event-stream',

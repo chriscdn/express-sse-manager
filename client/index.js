@@ -1,9 +1,9 @@
 class Client {
 
-	constructor() {
+	constructor(path = '/sse') {
 		this.events = new Map()
 
-		this.eventSource = new EventSource('/sse')
+		this.eventSource = new EventSource(path)
 
 		this.eventSource.addEventListener('open', this.onOpen.bind(this))
 		this.eventSource.addEventListener('error', this.onError.bind(this))

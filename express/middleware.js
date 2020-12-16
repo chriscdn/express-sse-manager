@@ -7,14 +7,14 @@ module.exports = (req, res, next) => {
 		'Cache-Control': 'no-cache',
 		'Connection': 'keep-alive',
 		'Access-Control-Allow-Origin': '*'
-	});
+	})
 
-	const handshakeInterval = setInterval(() => {
-		res.write(': sse-handshake');
-	}, 3000);
+	const keepAliveHandshake = setInterval(() => {
+		res.write(':keepalive')
+	}, 15000)
 
-	res.on('finish', () => clearInterval(handshakeInterval));
-	res.on('close', () => clearInterval(handshakeInterval));
+	res.on('finish', () => clearInterval(keepAliveHandshake))
+	res.on('close', () => clearInterval(keepAliveHandshake))
 
 	/**
 	 * Add function to response which allow to send events to the client
@@ -23,18 +23,20 @@ module.exports = (req, res, next) => {
 	 * @param [id]
 	 */
 	res.sse = (evt, json, id) => {
-		res.write('\n');
+		res.write('\n')
 
 		if (id) {
-			res.write(`id: ${id}\n`);
+			res.write(`id: ${id}\n`)
 		}
 
-		res.write(`retry: 3000\n`);
-		res.write(`event: ${evt}\n`);
-		res.write(`data: ${JSON.stringify(json)}\n\n`);
-	};
+		res.write(`retry: 3000\n`)
+		res.write(`event: ${evt}\n`)
+		res.write(`data: ${JSON.stringify(json)}\n\n`)
+
+		if (res.flush) {
+			res.flush()
+		}
+	}
 
 	next();
 }
-
-

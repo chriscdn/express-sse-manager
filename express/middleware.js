@@ -33,9 +33,11 @@ module.exports = (req, res, next) => {
 		res.write(`event: ${evt}\n`)
 		res.write(`data: ${JSON.stringify(json)}\n\n`)
 
-		if (res.flush) {
-			res.flush()
-		}
+		// jury is out on this... required with compression middleware? 
+		// some error about using flushHeaders instead.
+		// if (res.flush) {
+		// 	res.flush()
+		// }
 	}
 
 	next()

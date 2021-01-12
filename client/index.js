@@ -30,8 +30,11 @@ class Client {
 		const callback = event => {
 			const type = event.type
 			const data = JSON.parse(event.data)
-			
-			_callback({ type, data })
+
+			_callback({
+				type,
+				data
+			})
 		}
 
 		this.removeEventListener(eventName)
@@ -51,4 +54,4 @@ class Client {
 
 }
 
-module.exports = new Client()
+module.exports = Client

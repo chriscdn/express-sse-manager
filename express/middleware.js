@@ -35,9 +35,9 @@ module.exports = (req, res, next) => {
 
 		// jury is out on this... required with compression middleware? 
 		// some error about using flushHeaders instead.
-		// if (res.flush) {
-		// 	res.flush()
-		// }
+		if (res.flush) {
+			res.flush()
+		}
 	}
 
 	next()

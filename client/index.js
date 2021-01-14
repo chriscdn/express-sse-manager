@@ -1,14 +1,37 @@
+const {
+	nanoid
+} = require('nanoid')
+
+const urljoin = require('url-join')
+
 class Client {
 
-	constructor(path = '/sse') {
+	constructor(path = '/sse', key = nanoid()) {
 		this.events = new Map()
 
-		this.eventSource = new EventSource(path)
+		const fullPath = urljoin(path, key)
+
+		this.eventSource = new EventSource(fullPath)
+		this.key = key
 
 		this.eventSource.addEventListener('open', this.onOpen.bind(this))
 		this.eventSource.addEventListener('error', this.onError.bind(this))
 		this.eventSource.addEventListener('close', this.onClose.bind(this))
+
 	}
+
+	get headers() {
+		return {
+			'sse-key-e5b6a1db': this.key
+		}
+	}
+
+	// addSSEHeadersToAxiosClient(axiosInstance) {
+	// 	axiosInstance.interceptors.request.use(config => {
+	// 		config.headers['sse-key'] = this.key
+	// 		return config
+	// 	})
+	// }
 
 	onOpen(event) {
 		// console.log('onOpen')

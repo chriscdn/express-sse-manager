@@ -17,14 +17,6 @@ class Manager {
 		this.channels = new Map()
 	}
 
-	// this function can be overwritten depending on the
-	// mechanism to uniquely identifier users
-	// 
-	// req.session.id assumes use of 'express-session'
-	keyFromRequest(req) {
-		return req.session.id
-	}
-
 	registerConnection(key, req, res) {
 		res.on('finish', () => this.removeConnection(key))
 		res.on('close', () => this.removeConnection(key))
@@ -34,8 +26,12 @@ class Manager {
 		this.connections.set(key, res)
 	}
 
+	getConnection(key) {
+		return this.connections.get(key)
+	}
+
 	removeConnection(key) {
-		const connection = this.connections.get(key)
+		const connection = this.getConnection(key)
 
 		if (connection) {
 			console.log(`sse deleting connection: ${key}`)
@@ -44,15 +40,8 @@ class Manager {
 		}
 	}
 
-	// closeConnection(key) {
-	// 	this.sendMessage(key, 'close', {}, -1)
-	// 	this.messageArchive.delete(key)
-	// 	this.removeConnection(key)
-
-	// }
-
 	sendMessage(key, evt, json = {}, id = null) {
-		const res = this.connections.get(key)
+		const res = this.getConnection(key)
 
 		if (res) {
 			res.sse(evt, json, id)

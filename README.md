@@ -21,6 +21,11 @@ Add to routes where you'd like access to the `sse` connection.
 ```js
 const sseMiddleware = require('@chriscdn/express-sse-manager/express/middleware')
 
-
-
+app.use('/myroute/', sseMiddleware, ...)
 ```
+
+This adds a `sseSendMessage` function to the request.
+
+### Third
+
+Connect from the client.

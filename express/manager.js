@@ -13,8 +13,9 @@ class Manager {
 
 	constructor() {
 		this.connections = new Map()
-		this.messageArchive = new Map()
+		this.messageArchive = []
 		this.channels = new Map()
+		this.lastEventID = 0
 	}
 
 	registerConnection(key, req, res) {
@@ -23,7 +24,10 @@ class Manager {
 
 		console.log(`sse registering connection: ${key}`)
 
+		const LastEventID = parseInt(req.headers['last-event-id']) || 0
+
 		this.connections.set(key, res)
+		this.sendPendingMessages(key, LastEventID)
 	}
 
 	getConnection(key) {
@@ -40,28 +44,57 @@ class Manager {
 		}
 	}
 
-	sendMessage(key, evt, json = {}, id = null) {
+	sendMessage(key, evt, json = {}, sendId = true) {
 		const res = this.getConnection(key)
 
+		if (sendId) {
+			this.lastEventID = this.lastEventID + 1
+			this.appendToMessageArchive(key, evt, json, this.lastEventID)
+		}
+
 		if (res) {
-			res.sse(evt, json, id)
+			if (sendId) {
+				res.sse(evt, json, this.lastEventID)
+			} else {
+				res.sse(evt, json, null)
+			}
 		}
 	}
 
-	appendToMessageArchive(key, evt, json = {}) {
-
-		if (!this.messageArchive.has(key)) {
-			this.messageArchive.set(key, [])
-		}
-
-		const messages = this.messageArchive.get(key)
-
-		messages.push({
+	appendToMessageArchive(key, evt, json = {}, id) {
+		this.messageArchive.push({
+			key,
+			id,
 			evt,
 			json
 		})
 
-		return messages.length - 1
+		const maxItems = 10000
+
+		// push appends to the end of the array
+		this.messageArchive = this.messageArchive.slice(Math.max(this.messageArchive.length - maxItems, 0))
+	}
+
+	sendPendingMessages(key, lastEventID) {
+		const res = this.getConnection(key)
+
+		if (res) {
+			const messages = this.messageArchive
+				.filter(message => message.key == key)
+				.filter(message => message.id > lastEventID)
+				.sort((a, b) => a.id - b.id)
+
+			messages.forEach(message => {
+				res.sse(message.evt, message.json, message.id)
+			})
+		}
+
+		this.discardMessages(key)
+	}
+
+	discardMessages(key) {
+		// toss messages belonging to key
+		this.messageArchive = this.messageArchive.filter(message => message.key != key)
 	}
 
 	subscribeToChannel(key, channel) {
@@ -79,14 +112,6 @@ class Manager {
 	broadcastToChannel(channel, evt, json = {}) {
 
 	}
-
-	// sendPendingMessages(key, lastEventID) {
-	// 	const messages = this.messageArchive.get(key) || []
-
-	// 	messages.slice(lastEventID + 1).forEach(msg => {
-	// 		this.sendMessage(key, msg.evt, msg.json)
-	// 	})
-	// }
 
 }
 

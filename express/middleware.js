@@ -1,15 +1,24 @@
-// const manager = require('./manager')
+const manager = require('./manager')
 
 module.exports = (req, res, next) => {
+
 	const key = req.headers['sse-key-e5b6a1db']
 
-	// console.log(`sseKey: ${key}`)
+	if (key) {
+		req.sseKey = key
+	}
 
-	req.sseKey = key
+	req.sseSendMessage = (evt, json = {}, sendId = true) => {
+		manager.sendMessage(key, evt, json, sendId)
+	}
 
-	// req.sendMessage = function sendMessage(evt, json = {}, id = null) {
-	// 	manager.sendMessage(evt, json, id)
-	// }
+	// sse.manager.pleasewait(req.sseKey, 'One moment...')
 
 	next()
 }
+
+// console.log(`sseKey: ${key}`)
+
+// req.sendMessage = function sendMessage(evt, json = {}, id = null) {
+// 	manager.sendMessage(evt, json, id)
+// }

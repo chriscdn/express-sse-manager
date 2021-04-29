@@ -17,7 +17,6 @@ class Client {
 		this.eventSource.addEventListener('open', this.onOpen.bind(this))
 		this.eventSource.addEventListener('error', this.onError.bind(this))
 		this.eventSource.addEventListener('close', this.onClose.bind(this))
-
 	}
 
 	get headers() {

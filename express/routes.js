@@ -4,7 +4,6 @@ const router = express.Router()
 // const middleware = require('./middleware')
 const manager = require('./manager')
 
-
 const middleware = (req, res, next) => {
 
 	res.writeHead(200, {
@@ -47,7 +46,6 @@ const middleware = (req, res, next) => {
 
 	next()
 }
-
 
 router.get('/:key', middleware, (req, res) => {
 	const key = req.params.key

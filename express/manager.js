@@ -76,20 +76,25 @@ class Manager {
 	}
 
 	sendPendingMessages(key, lastEventID) {
-		const res = this.getConnection(key)
 
-		if (res) {
-			const messages = this.messageArchive
-				.filter(message => message.key == key)
-				.filter(message => message.id > lastEventID)
-				.sort((a, b) => a.id - b.id)
+		if (lastEventID > 0) {
 
-			messages.forEach(message => {
-				res.sse(message.evt, message.json, message.id)
-			})
+			const res = this.getConnection(key)
+
+			if (res) {
+				const messages = this.messageArchive
+					.filter(message => message.key == key)
+					.filter(message => message.id > lastEventID)
+					.sort((a, b) => a.id - b.id)
+
+				messages.forEach(message => {
+					res.sse(message.evt, message.json, message.id)
+				})
+			}
 		}
 
 		this.discardMessages(key)
+
 	}
 
 	discardMessages(key) {

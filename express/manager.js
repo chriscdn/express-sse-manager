@@ -7,7 +7,6 @@
 // 
 // 
 // 
-// 
 
 class Manager {
 
@@ -18,6 +17,10 @@ class Manager {
 		this.lastEventID = 0
 	}
 
+	// TODO: a "key" could be considered a channel.  Consider what happens if a user has two
+	// browser windows open.  They might register with the same key (depending how token is defined).
+	// 
+	// send message to a "key" would mean sending to all clients - even if they belong to different users
 	registerConnection(key, req, res) {
 		res.on('finish', () => this.removeConnection(key))
 		res.on('close', () => this.removeConnection(key))

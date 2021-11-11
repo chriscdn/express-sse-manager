@@ -1,29 +1,26 @@
-const {
-	nanoid
-} = require('nanoid')
-
 const urljoin = require('url-join')
 
-class Client {
+// a client is required PER channel
 
-	constructor(path = '/sse', key = nanoid()) {
+class Client {
+	constructor({ path = '/sse', channel = 'hello' } = {}) {
 		this.events = new Map()
 
-		const fullPath = urljoin(path, key)
+		const fullPath = urljoin(path, channel)
 
 		this.eventSource = new EventSource(fullPath)
-		this.key = key
+		this.channel = channel
 
 		this.eventSource.addEventListener('open', this.onOpen.bind(this))
 		this.eventSource.addEventListener('error', this.onError.bind(this))
 		this.eventSource.addEventListener('close', this.onClose.bind(this))
 	}
 
-	get headers() {
-		return {
-			'sse-key-e5b6a1db': this.key
-		}
-	}
+	//   get headers() {
+	//     return {
+	//       "sse-key-e5b6a1db": this.key,
+	//     };
+	//   }
 
 	// addSSEHeadersToAxiosClient(axiosInstance) {
 	// 	axiosInstance.interceptors.request.use(config => {
@@ -41,21 +38,21 @@ class Client {
 	}
 
 	onClose(event) {
+		//   console.log('onClose')
 		this.eventSource.close()
 		this.eventSource = null
 	}
 
 	addEventListener(eventName, _callback) {
-
 		// this assumes a single listener for each event
 
-		const callback = event => {
+		const callback = (event) => {
 			const type = event.type
 			const data = JSON.parse(event.data)
 
 			_callback({
 				type,
-				data
+				data,
 			})
 		}
 
@@ -71,9 +68,7 @@ class Client {
 			this.events.delete(eventName)
 			this.eventSource.removeEventListener(eventName, callback)
 		}
-
 	}
-
 }
 
 module.exports = Client

@@ -1,6 +1,6 @@
 # express-sse-manager
 
-Server-Sent Events is great, but a little tricky to setup and manage with Express.
+Server-Sent Events are great, but a little tricky to setup and manage with Express.
 
 This package provides a way of managing individual sse connections.  In the future a channel subscribe/unsubscribe.
 
@@ -11,7 +11,7 @@ This package provides a way of managing individual sse connections.  In the futu
 ```js
 const sse = require('@chriscdn/express-sse-manager/express/')
 
-app.use('/sse', sse.routes)
+app.use('/sse', sse.routes())
 ```
 
 ### Second
